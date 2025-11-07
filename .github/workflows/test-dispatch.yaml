@@ -1,0 +1,38 @@
+name: Push Beta files into Production
+on:
+  workflow_dispatch:
+    # Example of inputs
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      log_level:
+        description: 'Log level'
+        required: true
+        type: choice
+        options:
+          - debug
+          - info
+          - warn
+          - error
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tester:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - name: Run basic echo test
+        run: |
+          echo "Hello, this is a basic echo test!"
+          echo "The workflow was triggered by a ${{ github.event_name }} event."
+          echo "The branch is ${{ github.ref }} and the repository is ${{ github.repository }}."
